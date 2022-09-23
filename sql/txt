@@ -1,0 +1,68 @@
+create table h_rooms(
+room_id number (5),
+room_type nchar(20) NOT NULL,
+room_number nchar(5) NOT NULL,
+constraint pk_h_room_id PRIMARY KEY(room_id)
+);
+insert into h_rooms
+values('111', 'Single', 'AA');
+insert into h_rooms
+values('222', 'Double', 'AB');
+insert into h_rooms
+values('333', 'Quad', 'AC');
+select*from h_rooms;
+
+create table h_customers(
+h_cust_id int,
+cust_name nchar (25) NOT NULL,
+cust_age int,
+room_id number (5),
+constraint pk_h_cust_id PRIMARY KEY (h_cust_id),
+constraint fk_room_id FOREIGN KEY (room_id) REFERENCES h_rooms(room_id)   // is referencing to the column room_id of the room table
+);
+insert into h_customers
+values('1', 'Sabina', 22, '111');
+insert into h_customers
+values('2', 'Madina', 19, '222');
+insert into h_customers
+values('3', 'Nurlan', 34, '333');
+select*from h_customers;
+
+create table payments(
+paym_id int,
+paym_type nvarchar2(15),
+paym_date date,
+cust_id int,
+constraint pk_payments_id PRIMARY KEY(paym_id),
+constraint fk_p_cust_id FOREIGN KEY (cust_id) REFERENCES h_customers(h_cust_id)   // is referencing to the column h_cust_id of the h_customers table
+);
+insert into payments
+values('101', 'credit card', to_date('15-02-2022','dd-mm-yyyy'), '1');
+insert into payments
+values('102', 'cash', to_date('05-05-2022','dd-mm-yyyy'), '2');
+insert into payments
+values('103', 'cash', to_date('23-08-2022','dd-mm-yyyy'), '3');
+select*from payments;
+
+create table reservation(
+reserv_id int,
+reserv_date date NOT NULL,
+cust_id int,
+room_id int,
+paym_id,
+constraint pk_hotel_reserv_id PRIMARY KEY (reserv_id),
+constraint fk_hotel_cust_id FOREIGN KEY (cust_id) REFERENCES h_customers(h_cust_id) on delete cascade,
+constraint fk_hotel_room_id FOREIGN KEY (room_id) REFERENCES h_rooms(room_id) ,    
+constraint fk_hotel_paym_id FOREIGN KEY (paym_id) REFERENCES payments(paym_id) on delete cascade   
+);
+insert into reservation
+values('1001',  to_date('15-02-2022','dd-mm-yyyy'), '1', '111', '101');
+insert into reservation
+values('1002', to_date('05-05-2022','dd-mm-yyyy'), '2', '222', '102');
+insert into reservation
+values('1003',  to_date('23-08-2022','dd-mm-yyyy'), '3', '333', '103');
+select*from reservation;
+
+delete from h_customers;
+delete from reservation;
+  
